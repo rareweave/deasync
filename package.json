@@ -1,8 +1,8 @@
 {
-	"name": "@kaciras/deasync",
-	"version": "1.0.3",
+	"name": "glome-deasync",
+	"version": "1.0.4",
 	"description": "Turns async code into sync via JavaScript wrapper of Node event loop, support both callback and promise",
-	"author": "Kaciras <Kaciras@protonmail.com>",
+	"author": "Angrymouse <nik@rareweave.store>",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
