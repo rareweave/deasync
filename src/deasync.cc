@@ -1,40 +1,33 @@
+#define NAPI_VERSION 3
+
 #include <uv.h>
 #include <node_api.h>
-#include <pthread.h>
 
-// Global mutex and condition variable
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
-bool async_work_done = false;
+uv_async_t async_handle;
 
-void async_work_callback(uv_work_t* req) {
-    // ... Do your async work here ...
-
-    // Signal that async work is done
-    pthread_mutex_lock(&mutex);
-    async_work_done = true;
-    pthread_cond_signal(&cond);
-    pthread_mutex_unlock(&mutex);
+void async_cb(uv_async_t* handle) {
+    // This is called when our Run function triggers the async handle.
+    // We don't need to do anything here, it's just to wake up uv_run.
 }
 
 napi_value Run(napi_env env, napi_callback_info info) {
     uv_loop_s* loop;
     napi_get_uv_event_loop(env, &loop);
 
-    uv_work_t work_req;
-    uv_queue_work(loop, &work_req, async_work_callback, NULL);
+    // Send an async signal. This will trigger the async_cb.
+    uv_async_send(&async_handle);
 
-    pthread_mutex_lock(&mutex);
-    while (!async_work_done) {
-        pthread_cond_wait(&cond, &mutex);
-    }
-    async_work_done = false; // reset the flag
-    pthread_mutex_unlock(&mutex);
-
+    uv_run(loop, UV_RUN_NOWAIT);
     return nullptr;
 }
 
 napi_value Init(napi_env env, napi_value exports) {
+    uv_loop_s* loop;
+    napi_get_uv_event_loop(env, &loop);
+
+    // Initialize our async handle.
+    uv_async_init(loop, &async_handle, async_cb);
+
     napi_value fn_run;
     napi_create_function(env, "run", NAPI_AUTO_LENGTH, Run, NULL, &fn_run);
 

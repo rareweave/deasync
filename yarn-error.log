@@ -29,7 +29,7 @@ Trace:
 npm manifest: 
   {
   	"name": "glome-deasync",
-  	"version": "1.0.5",
+  	"version": "1.0.8",
   	"description": "Turns async code into sync via JavaScript wrapper of Node event loop, support both callback and promise",
   	"author": "Angrymouse <nik@rareweave.store>",
   	"license": "MIT",
