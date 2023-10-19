@@ -4,20 +4,29 @@
 #include <node_api.h>
 
 uv_async_t async_handle;
+volatile bool is_inside_uv_run = false;
 
 void async_cb(uv_async_t* handle) {
-    // This is called when our Run function triggers the async handle.
-    // We don't need to do anything here, it's just to wake up uv_run.
+    // Exit uv_run immediately
+    is_inside_uv_run = false;
+    uv_stop(handle->loop);
 }
 
 napi_value Run(napi_env env, napi_callback_info info) {
     uv_loop_s* loop;
     napi_get_uv_event_loop(env, &loop);
 
-    // Send an async signal. This will trigger the async_cb.
-    uv_async_send(&async_handle);
+    if (is_inside_uv_run) {
+        // If already inside uv_run, just send an async signal and return
+        uv_async_send(&async_handle);
+        return nullptr;
+    }
 
-    uv_run(loop, UV_RUN_NOWAIT);
+    is_inside_uv_run = true;
+    uv_async_send(&async_handle); // Ensure we have an async event pending
+    uv_run(loop, UV_RUN_ONCE);
+    is_inside_uv_run = false;
+
     return nullptr;
 }
 

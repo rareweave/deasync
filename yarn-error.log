@@ -14,22 +14,19 @@ Platform:
   linux x64
 
 Trace: 
-  Error: canceled
-      at Interface.<anonymous> (/usr/share/yarn/lib/cli.js:137150:13)
-      at Interface.emit (node:events:513:28)
-      at [_ttyWrite] [as _ttyWrite] (node:internal/readline/interface:1131:18)
-      at ReadStream.onkeypress (node:internal/readline/interface:270:20)
-      at ReadStream.emit (node:events:513:28)
-      at emitKeys (node:internal/readline/utils:357:14)
-      at emitKeys.next (<anonymous>)
-      at ReadStream.onData (node:internal/readline/emitKeypressEvents:64:36)
-      at ReadStream.emit (node:events:513:28)
-      at addChunk (node:internal/streams/readable:324:12)
+  Error: setRawMode EIO
+      at ReadStream.setRawMode (node:tty:77:31)
+      at [_setRawMode] [as _setRawMode] (node:internal/readline/interface:380:18)
+      at Interface.close (node:internal/readline/interface:530:24)
+      at ReadStream.ontermend (node:internal/readline/interface:266:10)
+      at ReadStream.emit (node:events:525:35)
+      at endReadableNT (node:internal/streams/readable:1359:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
 
 npm manifest: 
   {
   	"name": "glome-deasync",
-  	"version": "1.0.8",
+  	"version": "1.0.9",
   	"description": "Turns async code into sync via JavaScript wrapper of Node event loop, support both callback and promise",
   	"author": "Angrymouse <nik@rareweave.store>",
   	"license": "MIT",
