@@ -7,7 +7,7 @@
 .nyc*
 /coverage
 
-/index.js
+
 /temp.js
 /test/*.js
 *.d.ts
